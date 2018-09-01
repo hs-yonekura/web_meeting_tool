@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatapp</title>
+</head>
+<body>
+
+     <!-- ================ 追記 ================ -->
+    <style>
+        .name{
+            font-size: 10px;
+        }
+        .text{
+            font-size: 16px;
+        }
+    </style>
+     <!-- ==================================== -->
+    
+    
+</head>
+<body>
+
+ <!-- ================ 追記 ================ -->
+<div> 
+    <div>
+        <input type="text" id="username">
+    </div>
+    <div>
+        <textarea id="text" rows="5"></textarea>
+        <button id="send">send</button>
+    </div>
+    <div id="output"></div>
+</div>
+<!-- ==================================== -->
+
+<script src="https://www.gstatic.com/firebasejs/5.4.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBTI8B4qL8OkUW2H6OCuaC1H7aZZLXmJxU",
+    authDomain: "webmeeting-64535.firebaseapp.com",
+    databaseURL: "https://webmeeting-64535.firebaseio.com",
+    projectId: "webmeeting-64535",
+    storageBucket: "",
+    messagingSenderId: "310869068018"
+  };
+  firebase.initializeApp(config);
+
+   //---------------追記---------------//
+  //Msg送信準備
+  const newPostRef = firebase.database();
+  let room = "room1";
+
+
+  const send = document.getElementById("send");
+  const username = document.getElementById("username");
+  const text = document.getElementById("text");
+  const output = document.getElementById("output")
+
+  //Msg送信処理
+  send.addEventListener('click', function(){
+    newPostRef.ref(room).push({
+        username: username.value,
+        text: text.value
+    });
+    text.value = "";
+  });
+
+  //Msg受信処理
+  newPostRef.ref(room).on("child_added",function(data){
+    const v = data.val();
+    const k = data.key;
+    let str ="";
+
+    str += '<div class="name">'+ v.username +'</div>';
+    str += '<div class="text">'+ v.text +'</div>';
+
+    output.innerHTML += str;
+
+  });
+//--------------------------------//
+
+</script>
+</body>
+</html>
